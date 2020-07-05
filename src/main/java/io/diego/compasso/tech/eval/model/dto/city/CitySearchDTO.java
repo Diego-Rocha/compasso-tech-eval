@@ -1,7 +1,6 @@
-package io.diego.compasso.tech.eval.model.dto;
+package io.diego.compasso.tech.eval.model.dto.city;
 
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Getter

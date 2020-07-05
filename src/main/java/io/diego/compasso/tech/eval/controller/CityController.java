@@ -1,8 +1,8 @@
 package io.diego.compasso.tech.eval.controller;
 
-import io.diego.compasso.tech.eval.converter.CityConverter;
-import io.diego.compasso.tech.eval.model.dto.CityDTO;
-import io.diego.compasso.tech.eval.model.dto.CitySearchDTO;
+import io.diego.compasso.tech.eval.converter.city.CityConverter;
+import io.diego.compasso.tech.eval.model.dto.city.CityDTO;
+import io.diego.compasso.tech.eval.model.dto.city.CitySearchDTO;
 import io.diego.compasso.tech.eval.model.entity.City;
 import io.diego.compasso.tech.eval.service.CityService;
 import lombok.RequiredArgsConstructor;
@@ -34,7 +34,6 @@ public class CityController {
                                               @RequestParam(defaultValue = "10") int size,
                                               @RequestParam(required = false, name = "search") CitySearchDTO search
     ) {
-
         Page<City> pageEntity = service.findAll(PageRequest.of(page, size), search);
         Page<CityDTO> dtoPage = pageEntity.map(CityConverter::convert);
         return ResponseEntity.ok(dtoPage);

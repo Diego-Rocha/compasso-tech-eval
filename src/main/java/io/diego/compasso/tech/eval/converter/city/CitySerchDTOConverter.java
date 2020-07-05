@@ -1,6 +1,6 @@
-package io.diego.compasso.tech.eval.converter;
+package io.diego.compasso.tech.eval.converter.city;
 
-import io.diego.compasso.tech.eval.model.dto.CitySearchDTO;
+import io.diego.compasso.tech.eval.model.dto.city.CitySearchDTO;
 import io.diego.compasso.tech.eval.model.entity.City;
 import lombok.experimental.UtilityClass;
 

@@ -1,8 +1,7 @@
 package io.diego.compasso.tech.eval.service;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import io.diego.compasso.tech.eval.converter.CitySerchDTOConverter;
-import io.diego.compasso.tech.eval.model.dto.CitySearchDTO;
+import io.diego.compasso.tech.eval.converter.city.CitySerchDTOConverter;
+import io.diego.compasso.tech.eval.model.dto.city.CitySearchDTO;
 import io.diego.compasso.tech.eval.model.entity.City;
 import io.diego.compasso.tech.eval.repository.CityRepository;
 import lombok.RequiredArgsConstructor;
@@ -23,7 +22,6 @@ import static org.springframework.data.domain.ExampleMatcher.GenericPropertyMatc
 public class CityService {
 
     private final CityRepository repository;
-    private final ObjectMapper objectMapper;
 
     public City save(City city) {
         return repository.save(city);

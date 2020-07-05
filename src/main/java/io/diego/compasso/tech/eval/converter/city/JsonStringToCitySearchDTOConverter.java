@@ -1,7 +1,7 @@
-package io.diego.compasso.tech.eval.converter;
+package io.diego.compasso.tech.eval.converter.city;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import io.diego.compasso.tech.eval.model.dto.CitySearchDTO;
+import io.diego.compasso.tech.eval.model.dto.city.CitySearchDTO;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import org.springframework.beans.factory.annotation.Autowired;

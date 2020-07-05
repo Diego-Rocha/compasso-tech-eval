@@ -2,9 +2,9 @@ package io.diego.compasso.tech.eval.model.entity;
 
 import lombok.*;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-import javax.persistence.Entity;
 import javax.validation.constraints.NotBlank;
 
 @Document(collection = "city")
@@ -23,8 +23,10 @@ public class City {
     private String id;
 
     @NotBlank(message = NAME_IS_REQUIRED)
+    @Indexed
     private String name;
 
     @NotBlank(message = STATE_IS_REQUIRED)
+    @Indexed
     private String state;
 }

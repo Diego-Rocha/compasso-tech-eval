@@ -1,9 +1,8 @@
-package io.diego.compasso.tech.eval.model.dto;
+package io.diego.compasso.tech.eval.model.dto.city;
 
 import lombok.*;
 
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 @Getter

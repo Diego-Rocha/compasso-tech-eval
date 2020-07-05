@@ -1,8 +1,8 @@
 package io.diego.compasso.tech.eval.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import io.diego.compasso.tech.eval.converter.CityConverter;
-import io.diego.compasso.tech.eval.model.dto.CityDTO;
+import io.diego.compasso.tech.eval.converter.city.CityConverter;
+import io.diego.compasso.tech.eval.model.dto.city.CityDTO;
 import io.diego.compasso.tech.eval.model.entity.City;
 import io.diego.compasso.tech.eval.repository.CityRepository;
 import org.hamcrest.CoreMatchers;
@@ -21,8 +21,6 @@ import org.springframework.util.ResourceUtils;
 import javax.annotation.PostConstruct;
 import java.io.File;
 import java.io.IOException;
-import java.net.URLEncoder;
-import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.util.*;
 import java.util.stream.LongStream;
