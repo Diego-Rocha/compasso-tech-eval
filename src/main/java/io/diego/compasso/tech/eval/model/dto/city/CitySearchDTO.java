@@ -1,10 +1,8 @@
 package io.diego.compasso.tech.eval.model.dto.city;
 
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
 
-@Getter
-@Setter
+@Data
 public class CitySearchDTO {
     private String name;
     private String state;

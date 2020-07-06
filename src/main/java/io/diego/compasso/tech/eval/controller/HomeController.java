@@ -11,8 +11,7 @@ public class HomeController {
 
     @GetMapping("/")
     public void index(HttpServletResponse response) throws IOException {
-        //TODO swagger docs
-        response.sendRedirect("/city");
+        response.sendRedirect("/swagger-ui.html");
     }
 
 }

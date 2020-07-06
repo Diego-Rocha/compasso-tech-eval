@@ -33,7 +33,7 @@ public class ClientController {
     @GetMapping
     public ResponseEntity<Page<ClientDTO>> list(@RequestParam(defaultValue = "0") int page,
                                                 @RequestParam(defaultValue = "10") int size,
-                                                @RequestParam(required = false, name = "search") ClientSearchDTO search
+                                                ClientSearchDTO search
     ) {
         Page<Client> pageEntity = service.findAll(PageRequest.of(page, size), search);
         Page<ClientDTO> dtoPage = pageEntity.map(ClientConverter::convert);

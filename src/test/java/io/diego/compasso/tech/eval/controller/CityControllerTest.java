@@ -5,12 +5,14 @@ import io.diego.compasso.tech.eval.converter.city.CityConverter;
 import io.diego.compasso.tech.eval.model.dto.city.CityDTO;
 import io.diego.compasso.tech.eval.model.entity.City;
 import io.diego.compasso.tech.eval.repository.CityRepository;
+import io.diego.compasso.tech.eval.service.CityService;
 import org.hamcrest.CoreMatchers;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.data.domain.Example;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.MediaType;
@@ -29,8 +31,6 @@ import static org.hamcrest.CoreMatchers.containsStringIgnoringCase;
 import static org.hamcrest.Matchers.containsString;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -81,16 +81,16 @@ public class CityControllerTest {
         when(repository.findById("99")).thenReturn(Optional.empty());
 
         PageRequest pageRequestDefault = PageRequest.of(0, 10);
-        when(repository.findAll(pageRequestDefault)).thenReturn(new PageImpl<>(savedCities, pageRequestDefault, mockSize));
-
         PageRequest pageRequestCustom = PageRequest.of(0, 1);
-        when(repository.findAll(pageRequestCustom)).thenReturn(new PageImpl<>(savedCities.subList(0, 1), pageRequestCustom, mockSize));
-
         PageRequest pageRequestOutOfRange = PageRequest.of(99, 1);
-        when(repository.findAll(pageRequestOutOfRange)).thenReturn(new PageImpl<>(Collections.emptyList(), pageRequestOutOfRange, mockSize));
 
+        Example<City> noSearchExample = Example.of(City.builder().build(), CityService.getExampleMatcher());
+        Example<City> searchExample = Example.of(City.builder().name("guaru").build(), CityService.getExampleMatcher());
 
-        when(repository.findAll(any(), eq(pageRequestDefault))).thenReturn(new PageImpl<>(savedCities.subList(0, 1), pageRequestDefault, mockSize));
+        when(repository.findAll(noSearchExample, pageRequestDefault)).thenReturn(new PageImpl<>(savedCities, pageRequestDefault, mockSize));
+        when(repository.findAll(noSearchExample, pageRequestCustom)).thenReturn(new PageImpl<>(savedCities.subList(0, 1), pageRequestCustom, mockSize));
+        when(repository.findAll(noSearchExample, pageRequestOutOfRange)).thenReturn(new PageImpl<>(Collections.emptyList(), pageRequestOutOfRange, mockSize));
+        when(repository.findAll(searchExample, pageRequestDefault)).thenReturn(new PageImpl<>(savedCities.subList(7, 8), pageRequestDefault, mockSize));
 
     }
 
@@ -220,13 +220,11 @@ public class CityControllerTest {
     @Test
     public void whenGetPaginate_withSearch_thenOk() throws Exception {
         mockMvc.perform(MockMvcRequestBuilders.get("/city")
-                .queryParam("page", "0")
-                .queryParam("size", "10")
-                .queryParam("search", "{'name':'oia'}".replace("'", "\""))
+                .queryParam("name", "guaru")
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content().string(containsString("\"name\"")))
-                .andExpect(content().string(containsStringIgnoringCase("\"oiapoque\"")))
+                .andExpect(content().string(containsStringIgnoringCase("\"guarulhos\"")))
                 .andExpect(content().string(containsString("\"state\"")))
                 .andExpect(content().string(containsString("\"size\":1")));
     }

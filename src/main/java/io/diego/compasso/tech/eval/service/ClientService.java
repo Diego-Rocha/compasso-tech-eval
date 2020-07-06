@@ -44,21 +44,15 @@ public class ClientService {
         repository.deleteById(id);
     }
 
-    public Page<Client> findAll(Pageable pageable) {
-        return repository.findAll(pageable);
+    public Page<Client> findAll(Pageable pageable, ClientSearchDTO search) {
+        Client example = ClientSearchDTOConverter.convert(search);
+        return repository.findAll(Example.of(example, getExampleMatcher()), pageable);
     }
 
-    public Page<Client> findAll(Pageable pageable, ClientSearchDTO search) {
-        if (search == null) {
-            return findAll(pageable);
-        }
-        Client example = ClientSearchDTOConverter.convert(search);
-        ExampleMatcher matcher = ExampleMatcher.matching()
+    public static ExampleMatcher getExampleMatcher() {
+        return ExampleMatcher.matching()
                 .withMatcher("id", exact())
                 .withMatcher("name", contains().ignoreCase());
-
-
-        return repository.findAll(Example.of(example, matcher), pageable);
     }
 
     public Optional<Client> findById(String id) {

@@ -32,7 +32,7 @@ public class CityController {
     @GetMapping
     public ResponseEntity<Page<CityDTO>> list(@RequestParam(defaultValue = "0") int page,
                                               @RequestParam(defaultValue = "10") int size,
-                                              @RequestParam(required = false, name = "search") CitySearchDTO search
+                                              CitySearchDTO search
     ) {
         Page<City> pageEntity = service.findAll(PageRequest.of(page, size), search);
         Page<CityDTO> dtoPage = pageEntity.map(CityConverter::convert);

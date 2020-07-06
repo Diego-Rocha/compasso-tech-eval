@@ -1,6 +1,6 @@
 package io.diego.compasso.tech.eval.service;
 
-import io.diego.compasso.tech.eval.converter.city.CitySerchDTOConverter;
+import io.diego.compasso.tech.eval.converter.city.CitySearchDTOConverter;
 import io.diego.compasso.tech.eval.model.dto.city.CitySearchDTO;
 import io.diego.compasso.tech.eval.model.entity.City;
 import io.diego.compasso.tech.eval.repository.CityRepository;
@@ -31,20 +31,15 @@ public class CityService {
         repository.deleteById(id);
     }
 
-    public Page<City> findAll(Pageable pageable) {
-        return repository.findAll(pageable);
+    public Page<City> findAll(Pageable pageable, CitySearchDTO search) {
+        City example = CitySearchDTOConverter.convert(search);
+        return repository.findAll(Example.of(example, getExampleMatcher()), pageable);
     }
 
-    public Page<City> findAll(Pageable pageable, CitySearchDTO search) {
-        if (search == null) {
-            return findAll(pageable);
-        }
-        City example = CitySerchDTOConverter.convert(search);
-        ExampleMatcher matcher = ExampleMatcher.matching()
-                .withMatcher("name", contains().ignoreCase())
-                .withMatcher("state", exact().ignoreCase());
-
-        return repository.findAll(Example.of(example, matcher), pageable);
+    public static ExampleMatcher getExampleMatcher() {
+        return ExampleMatcher.matching()
+                    .withMatcher("name", contains().ignoreCase())
+                    .withMatcher("state", exact().ignoreCase());
     }
 
     public Optional<City> findById(String id) {

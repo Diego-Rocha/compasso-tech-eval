@@ -15,7 +15,7 @@ import java.time.LocalDate;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@EqualsAndHashCode(of = {"name", "birthDate", "city"})
+@EqualsAndHashCode(of = {"name", "birthDate"})
 public class Client {
 
     @Id

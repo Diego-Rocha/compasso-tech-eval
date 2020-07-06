@@ -5,12 +5,14 @@ import io.diego.compasso.tech.eval.converter.client.ClientConverter;
 import io.diego.compasso.tech.eval.model.dto.client.ClientDTO;
 import io.diego.compasso.tech.eval.model.entity.Client;
 import io.diego.compasso.tech.eval.repository.ClientRepository;
+import io.diego.compasso.tech.eval.service.ClientService;
 import org.hamcrest.CoreMatchers;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.data.domain.Example;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.MediaType;
@@ -29,8 +31,6 @@ import static org.hamcrest.CoreMatchers.containsStringIgnoringCase;
 import static org.hamcrest.Matchers.containsString;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -85,15 +85,18 @@ class ClientControllerTest {
         when(repository.findById("99")).thenReturn(Optional.empty());
 
         PageRequest pageRequestDefault = PageRequest.of(0, 10);
-        when(repository.findAll(pageRequestDefault)).thenReturn(new PageImpl<>(savedCLients, pageRequestDefault, mockSize));
-
         PageRequest pageRequestCustom = PageRequest.of(0, 1);
-        when(repository.findAll(pageRequestCustom)).thenReturn(new PageImpl<>(savedCLients.subList(0, 1), pageRequestCustom, mockSize));
-
         PageRequest pageRequestOutOfRange = PageRequest.of(99, 1);
-        when(repository.findAll(pageRequestOutOfRange)).thenReturn(new PageImpl<>(Collections.emptyList(), pageRequestOutOfRange, mockSize));
 
-        when(repository.findAll(any(), eq(pageRequestDefault))).thenReturn(new PageImpl<>(savedCLients.subList(0, 1), pageRequestDefault, mockSize));
+        Example<Client> noSearchExample = Example.of(Client.builder().build(), ClientService.getExampleMatcher());
+        Example<Client> searchExample = Example.of(Client.builder().name("john").build(), ClientService.getExampleMatcher());
+
+        when(repository.findAll(noSearchExample,pageRequestDefault)).thenReturn(new PageImpl<>(savedCLients, pageRequestDefault, mockSize));
+        when(repository.findAll(noSearchExample,pageRequestCustom)).thenReturn(new PageImpl<>(savedCLients.subList(0, 1), pageRequestCustom, mockSize));
+        when(repository.findAll(noSearchExample,pageRequestOutOfRange)).thenReturn(new PageImpl<>(Collections.emptyList(), pageRequestOutOfRange, mockSize));
+        when(repository.findAll(searchExample, pageRequestDefault)).thenReturn(new PageImpl<>(savedCLients.subList(0, 1), pageRequestDefault, mockSize));
+
+
     }
 
     @Test
@@ -167,9 +170,7 @@ class ClientControllerTest {
     @Test
     public void whenGetPaginate_withSearch_thenOk() throws Exception {
         mockMvc.perform(MockMvcRequestBuilders.get("/client")
-                .queryParam("page", "0")
-                .queryParam("size", "10")
-                .queryParam("search", "{'name':'john'}".replace("'", "\""))
+                .queryParam("name", "john")
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content().string(containsString("\"name\"")))
@@ -183,7 +184,7 @@ class ClientControllerTest {
         mockMvc.perform(MockMvcRequestBuilders.get("/client")
                 .queryParam("page", "0")
                 .queryParam("size", "10")
-                .queryParam("search", "{'id':'1'}".replace("'", "\""))
+                .queryParam("id", "1")
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content().string(containsString("\"name\"")))

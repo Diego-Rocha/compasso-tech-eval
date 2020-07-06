@@ -5,7 +5,7 @@ import io.diego.compasso.tech.eval.model.entity.City;
 import lombok.experimental.UtilityClass;
 
 @UtilityClass
-public class CitySerchDTOConverter {
+public class CitySearchDTOConverter {
 
     public City convert(CitySearchDTO dto) {
         return City.builder()
